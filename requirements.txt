@@ -9,3 +9,4 @@ pyarrow
 jupyterlab
 ipykernel
 notebook
+seaborn
