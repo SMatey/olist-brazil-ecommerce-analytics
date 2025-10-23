@@ -131,39 +131,6 @@ jupyter notebook
 
 ---
 
-## ✅ Criterios de calidad (Parte I)
-
-- **PKs** únicas en tablas principales (orders/customers/sellers/products/order_items).  
-- **FK** con **referencialidad ≥ 99.5%**, huérfanas documentadas.  
-- **Reglas temporales**: `purchase ≤ approved ≤ carrier ≤ delivered` (violaciones críticas ≤ 0.5%).  
-- **Log de calidad** con incidencias y tratamiento propuesto (deduplicación, exclusión controlada, banderas).
-
----
-
-## 🔀 Flujo de ramas (sugerido)
-
-- `main` → estable, listo para entrega.  
-- `develop` → integración continua.  
-- `feature/<tema>` → ramas de trabajo (ej. `feature/eda-logistica`).
-
-**Convención de commits**: prefijo + descripción (ej. `eda: agrega histograma delivery_days`).
-
----
-
-## 🧩 Entregables por parte
-
-**Parte I (este repo ya lo contempla):**
-- Documento con **contexto**, **nicho**, **objetivos de negocio**, **objetivos del análisis** y **plan del proyecto** (con bibliografía APA 7).
-- `notebooks/01_eda.ipynb`, **ER** preliminar, **Log de Calidad** y resúmenes de perfilado.
-
-**Parte II:**
-- Limpieza/joins reproducibles (`02_limpieza_joins.ipynb`), vistas analíticas, scripts SQL.
-
-**Parte III:**
-- Pruebas/validación, optimización, KPIs finales (`03_kpis_graficos.ipynb`) y comunicación (notebooks limpios y/o Streamlit, presentación final).
-
----
-
 ## 🔒 Alcance y limitaciones
 
 - Sin `geolocation`: cortes por **estado/ciudad** (no distancias físicas).  
@@ -180,6 +147,3 @@ jupyter notebook
 - Olist. (s. f.). *Brazilian E‑Commerce Public Dataset by Olist* [Conjunto de datos]. Kaggle. https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 
 ---
-
-## 📝 Licencia
-MIT (o la que el equipo defina).
