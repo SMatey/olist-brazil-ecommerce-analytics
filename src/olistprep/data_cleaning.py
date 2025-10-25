@@ -11,7 +11,7 @@ def remove_duplicates(df, date_column):
 def fill_missing_values(df):
     """Rellena valores nulos según las reglas especificadas: 
     - Categóricos: 'Unknown' o valor encontrado en otros registros.
-    - Numéricos: Mediana.
+    - Numéricos: Media.
     - Fechas: Eliminar filas con fechas nulas."""
     
     for column in df.columns:
@@ -48,7 +48,7 @@ def remove_outliers(
     -------
     DataFrame limpio (y opcionalmente el índice de filas eliminadas).
     """
-    
+
     if numeric_columns is None:
         numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
 
