@@ -25,10 +25,46 @@ def fill_missing_values(df):
     return df
 
 # Función para eliminar outliers (valores extremos)
-def remove_outliers(df, numeric_columns, threshold=3):
-    """Elimina outliers basados en desviaciones estándar (threshold por defecto 3)."""
-    for col in numeric_columns:
-        mean = df[col].mean()
-        std_dev = df[col].std()
-        df = df[(df[col] >= mean - threshold * std_dev) & (df[col] <= mean + threshold * std_dev)]
-    return df
+def remove_outliers(df: pd.DataFrame,
+                           numeric_columns: list[str] | None = None,
+                           threshold: float = 3.0) -> pd.DataFrame:
+    """
+    Elimina filas que tengan outliers (|z| > threshold) en AL MENOS una
+    columna numérica. Calcula z-scores una sola vez usando la media y
+    desviación estándar del DataFrame original.
+
+    Parámetros
+    ----------
+    df : DataFrame de entrada (no se modifica in-place).
+    numeric_columns : lista de columnas numéricas a evaluar. Si None, detecta automáticamente.
+    threshold : umbral de z-score (por defecto 3.0).
+
+    Retorna
+    -------
+    DataFrame limpio con las filas sin outliers.
+    """
+    if numeric_columns is None:
+        numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
+
+    if not numeric_columns:
+        return df.copy()
+
+    # Subconjunto numérico
+    X = df[numeric_columns].copy()
+
+    # Media y desviación (ddof=0 para evitar NaNs con tamaños pequeños)
+    mu = X.mean()
+    sigma = X.std(ddof=0)
+
+    # Evitar división por 0 en columnas constantes
+    sigma = sigma.replace(0, np.nan)
+
+    # z-scores vectorizados
+    Z = (X - mu) / sigma
+
+    # Fila es outlier si ALGUNA columna tiene |z| > threshold
+    mask_outlier_any = Z.abs().gt(threshold).any(axis=1)
+
+    # Filtrar manteniendo las no-outliers
+    df_clean = df.loc[~mask_outlier_any].copy()
+    return df_clean
