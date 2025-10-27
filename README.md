@@ -20,7 +20,7 @@ Habilitar análisis accionables para Olist y sus *stakeholders* (PyMEs vendedora
 ## 🧭 Metodología (CRISP-DM)
 
 1) **Comprensión del negocio**  
-2) **Comprensión de los datos** *(Parte I)*  
+2) **Comprensión de los datos** 
 3) **Preparación de los datos**  
 4) **Modelado (arquitectura/pipeline de datos, no ML)**  
 5) **Evaluación** (pruebas, validación, optimización)  
@@ -28,30 +28,39 @@ Habilitar análisis accionables para Olist y sus *stakeholders* (PyMEs vendedora
 
 ---
 
-## 🧱 Estructura del repositorio
+## 🧱 Estructura base del repositorio
 
 ```
 data/
-  raw/                 # CSV originales de Olist (sin geolocation)
-  processed/           # salidas/tablas intermedias opcionales
+  raw/            # CSV originales de Olist
+  processed/      # integraciones intermedias
+  features/       # atributos derivados
+  formatted/      # salidas tipadas para BI
+  dictionary/     # artefactos de diccionario de datos
+  views/          # exportes de vistas (CSV/Parquet)
 db/
-  proyecto.duckdb      # base analítica local (DuckDB)
-docs/
-  bibliografia_apa.md  # fuentes en APA 7
-  er_diagrama.md       # ER y notas técnicas
-figures/               # PNG/HTML de gráficos exportados
+  olist_analytics.duckdb   # base analítica local (DuckDB)
+figures/                   # gráficos exportados
 notebooks/
-  01_eda.ipynb         # perfilado, PK/FK, reglas temporales, EDA básico
-  02_limpieza_joins.ipynb
-  03_kpis_graficos.ipynb
-sql/
-  00_create_tables.sql
-  10_create_views.sql
+  01_eda.ipynb
+  construccion/
+  formateo/
+  integracion/
+  limpieza/
+sql/                       # scripts SQL del proyecto
+src/
+  db/infraestructura_bd/run_infra.py
+  olistrep/data_cleaning.py
+pipeline/
+  load_staging.py
+  run_notebooks.py
 requirements.txt
+run_pipeline.py
 README.md
 ```
 
-> **Nota**: trabajamos **sin** `geolocation` para esta versión. Los cortes geográficos serán por **estado/ciudad** desde `customers`/`sellers`.
+> **Nota**: trabajamos **sin** `geolocation` para esta versión. Los cortes geográficos serán por **estado/ciudad** desde `customers`/`sellers`.  
+> Además, las vistas de negocio se exportan a `data/views/` como CSV/Parquet para consumo externo.
 
 ---
 
@@ -65,6 +74,7 @@ README.md
 - **Mermaid/draw.io** para ER y flujo
 - **Streamlit** (opcional) para dashboard local
 - **Git/GitHub** para versionamiento
+- Arquitectura **Lakehouse** con patrón **Medallion** (Bronze=`data/raw`, Silver=`data/processed`/`features`, Gold=tablas/vistas en DuckDB + exportes `formatted/` y `views/`)
 
 ---
 
@@ -108,14 +118,25 @@ jupyter notebook
 2. Ejecuta **`notebooks/01_eda.ipynb`** de inicio a fin.  
    - Crea vistas de lectura en DuckDB.  
    - Genera reportes de **nulos**, **PK/FK**, **reglas temporales** y **log de calidad**.  
-   - Exporta figuras a `figures/` y resúmenes a `data/processed/`.
+   - Exporta resúmenes a `data/processed/`.
 
-3. Verifica salidas clave:  
-   - `data/processed/pk_checks.xlsx`  
-   - `data/processed/fk_checks.xlsx`  
-   - `data/processed/temporal_rules.xlsx`  
-   - `data/processed/quality_log.csv`  
-   - `figures/*.png`
+---
+
+## 🚀 Ejecución end-to-end (pipeline)
+
+```bash
+# desde la raíz del repo (entorno activado e instalaciones hechas)
+python run_pipeline.py
+```
+
+El pipeline es **idempotente** y orquesta:
+1. Preparación de carpetas/salidas.  
+2. Limpieza e integración (notebooks / `run_notebooks.py`).  
+3. Carga a **DuckDB** (staging) con `pipeline/load_staging.py`.  
+4. **Infraestructura SQL** con `src/db/infraestructura_bd/run_infra.py`:
+   - creación de esquemas/tablas/vistas formateadas,
+   - checks de calidad y
+   - generación de diccionario/exportes (`formatted/`, `views/`).
 
 ---
 
