@@ -67,7 +67,7 @@ README.md
 ## 🧰 Tecnologías y herramientas
 
 - **Python 3.11**, **Jupyter/Colab**
-- **pandas**, **numpy**, **python-dateutil**
+- **pandas**, **numpy**, **python-dateutil**, **nbconvert**
 - **DuckDB** (archivo local) para SQL analítico y joins rápidos
 - **matplotlib** (estático) y **plotly.express** (interactivo para EDA)
 - **openpyxl** (exportes a Excel)
