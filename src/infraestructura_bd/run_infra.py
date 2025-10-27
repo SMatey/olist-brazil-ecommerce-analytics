@@ -49,13 +49,12 @@ views_to_export = [
 ]
 
 for view_name in views_to_export:
-    # Definir rutas de salida
+    # rutas de salida
     parquet_path = (OUT_DIR_VIEWS / f"{view_name}.parquet").resolve()
     csv_path = (OUT_DIR_VIEWS / f"{view_name}.csv").resolve()
     
     print(f"  Exportando olist.{view_name}...")
     
-    # Exportar a Parquet (como en integracion.ipynb)
     try:
         con.execute(f"""
             COPY (SELECT * FROM olist.{view_name})
@@ -65,7 +64,7 @@ for view_name in views_to_export:
     except Exception as e:
         print(f"  [ERROR] Falló la exportación Parquet de {view_name}: {e}")
 
-    # Exportar a CSV (como en integracion.ipynb)
+    
     try:
         con.execute(f"""
             COPY (SELECT * FROM olist.{view_name})
