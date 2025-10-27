@@ -12,8 +12,8 @@ DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 ORDER = [
     "schemas.sql",
-    "tables.sql",
     "views.sql",
+    "tables.sql",
     "checks.sql",
     "data_dictionary.sql",
 ]
