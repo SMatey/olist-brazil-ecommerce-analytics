@@ -33,20 +33,8 @@ def remove_outliers(
     return_removed_index: bool = False,
 ) -> pd.DataFrame | tuple[pd.DataFrame, pd.Index]:
     """
-    Elimina filas que tengan outliers (|z| > threshold) en AL MENOS una columna numérica.
+    Elimina filas que tengan outliers (|z| > threshold) en al menos una columna numérica.
     Calcula z-scores una sola vez usando media y desviación estándar del df recibido.
-
-    Parámetros
-    ----------
-    df : DataFrame de entrada (no se modifica in-place).
-    numeric_columns : columnas numéricas a evaluar. Si None, se detectan automáticamente.
-    threshold : umbral de z-score (por defecto 3.0).
-    ddof : grados de libertad para std (1 = default pandas.describe).
-    return_removed_index : si True, también devuelve el índice de filas eliminadas.
-
-    Retorna
-    -------
-    DataFrame limpio (y opcionalmente el índice de filas eliminadas).
     """
 
     if numeric_columns is None:
@@ -57,14 +45,11 @@ def remove_outliers(
 
     X = df[numeric_columns].copy()
 
-    # Reemplazar inf/-inf y dejar NaN (no contarán como outliers)
     X = X.replace([np.inf, -np.inf], np.nan)
 
-    # Media y desviación (ignora NaN). ddof=1 alinea con pandas.describe()
     mu = X.mean()
     sigma = X.std(ddof=ddof)
 
-    # Evitar división por 0 en columnas constantes
     sigma = sigma.replace(0, np.nan)
 
     # Z-score vectorizado
