@@ -24,7 +24,9 @@ SELECT
     transit_days,
     order_year, order_month, order_week, order_dow,
     purchase_hour, is_weekend_purchase,
-    delay_bucket, delivery_days_bucket
+    delay_bucket, delivery_days_bucket,
+    -- Columna indicadora para análisis
+    CASE WHEN delivery_days IS NOT NULL THEN true ELSE false END AS was_delivered
 FROM olist.orders;
 
 -- SATISFACCIÓN 
@@ -61,6 +63,7 @@ WITH base AS (
   LEFT JOIN olist.orders o       ON oi.order_id = o.order_id
   LEFT JOIN olist.reviews r      ON oi.order_id = r.order_id
   GROUP BY s.seller_id
+  HAVING COUNT(DISTINCT oi.order_id) > 0
 )
 SELECT * FROM base;
 

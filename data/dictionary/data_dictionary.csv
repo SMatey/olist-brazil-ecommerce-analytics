@@ -90,6 +90,7 @@ olist,vw_logistics,purchase_hour,13,BIGINT,YES
 olist,vw_logistics,is_weekend_purchase,14,BOOLEAN,YES
 olist,vw_logistics,delay_bucket,15,VARCHAR,YES
 olist,vw_logistics,delivery_days_bucket,16,VARCHAR,YES
+olist,vw_logistics,was_delivered,17,BOOLEAN,YES
 olist,vw_sales,order_id,1,VARCHAR,YES
 olist,vw_sales,items_per_order,2,BIGINT,YES
 olist,vw_sales,price,3,DOUBLE,YES
@@ -134,6 +135,7 @@ olist_fmt,logistics,purchase_hour,13,INTEGER,YES
 olist_fmt,logistics,is_weekend_purchase,14,BOOLEAN,YES
 olist_fmt,logistics,delay_bucket,15,VARCHAR,YES
 olist_fmt,logistics,delivery_days_bucket,16,VARCHAR,YES
+olist_fmt,logistics,was_delivered,17,BOOLEAN,YES
 olist_fmt,sales,order_id,1,VARCHAR,YES
 olist_fmt,sales,items_per_order,2,INTEGER,YES
 olist_fmt,sales,price,3,"DECIMAL(18,2)",YES

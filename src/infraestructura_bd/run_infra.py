@@ -69,7 +69,7 @@ for view_name in views_to_export:
         con.execute(f"""
             COPY (SELECT * FROM olist.{view_name})
             TO '{csv_path}'
-            (FORMAT CSV, HEADER);
+            (FORMAT CSV, HEADER, NULL 'NA');
         """)
     except Exception as e:
         print(f"  [ERROR] Falló la exportación CSV de {view_name}: {e}")

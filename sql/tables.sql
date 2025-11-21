@@ -28,7 +28,8 @@ SELECT
   CAST(v.purchase_hour         AS INTEGER)        AS purchase_hour,
   CAST(v.is_weekend_purchase   AS BOOLEAN)        AS is_weekend_purchase,
   CAST(v.delay_bucket          AS VARCHAR)        AS delay_bucket,
-  CAST(v.delivery_days_bucket  AS VARCHAR)        AS delivery_days_bucket
+  CAST(v.delivery_days_bucket  AS VARCHAR)        AS delivery_days_bucket,
+  CAST(v.was_delivered         AS BOOLEAN)        AS was_delivered
 FROM olist.vw_logistics AS v;
 
 CREATE OR REPLACE TABLE olist_fmt.customer_satisfaction AS
