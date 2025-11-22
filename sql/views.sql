@@ -20,7 +20,10 @@ SELECT
     delay_vs_estimated,
     late_days,
     on_time,
-    prep_hours,
+    CASE 
+        WHEN prep_hours < 0 THEN NULL
+        ELSE prep_hours
+    END AS prep_hours,
     transit_days,
     order_year, order_month, order_week, order_dow,
     purchase_hour, is_weekend_purchase,
