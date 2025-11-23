@@ -58,7 +58,6 @@ LEFT JOIN olist.customers c ON o.customer_id = c.customer_id;
 CREATE OR REPLACE VIEW olist.vw_customer_satisfaction AS
 SELECT
   r.order_id,
-  r.review_id, 
   o.order_purchase_timestamp, 
   r.review_score,
   CAST(r.review_creation_date    AS TIMESTAMP) AS review_creation_date,
