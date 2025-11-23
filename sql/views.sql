@@ -1,41 +1,65 @@
 -- VENTAS
 CREATE OR REPLACE VIEW olist.vw_sales AS
 SELECT
-    i.order_id,
-    i.item_count                               AS items_per_order,
-    i.order_price_total                        AS price,
-    i.order_freight_total                      AS freight_value,
+    oi.order_id,
+    oi.order_item_id,
+    oi.product_id,
+    oi.seller_id, 
+    o.order_purchase_timestamp, 
+    o.order_year,
+    o.order_month,
+    o.order_dow,
+    p.product_category_name_english AS product_category_name, 
+    c.customer_state, 
+    oi.price,
+    oi.freight_value,
+    (oi.price + oi.freight_value) AS item_total_value,
+    i.item_count AS items_per_order,
+    i.order_price_total AS order_price_total,
+    i.order_freight_total AS order_freight_total,
     (i.order_price_total + i.order_freight_total) AS order_total_value,
-    i.seller_count,
-    o.order_year, o.order_month, o.order_dow
-FROM olist.items i
-LEFT JOIN olist.orders o USING(order_id);
+    i.seller_count
+FROM olist.order_items oi
+LEFT JOIN olist.orders o ON oi.order_id = o.order_id
+LEFT JOIN olist.items i ON oi.order_id = i.order_id
+LEFT JOIN olist.products_en p ON oi.product_id = p.product_id
+LEFT JOIN olist.customers c ON o.customer_id = c.customer_id;
 
 -- LOGÍSTICA 
 CREATE OR REPLACE VIEW olist.vw_logistics AS
 SELECT
-    order_id,
-    delivery_days,
-    estimated_days,
-    delay_vs_estimated,
-    late_days,
-    on_time,
+    o.order_id,
+    o.customer_id, 
+    o.order_purchase_timestamp, 
+    c.customer_state, 
+    o.delivery_days,
+    o.estimated_days,
+    o.delay_vs_estimated,
+    o.late_days,
+    o.on_time,
     CASE 
-        WHEN prep_hours < 0 THEN NULL
-        ELSE prep_hours
+        WHEN o.prep_hours < 0 THEN NULL
+        ELSE o.prep_hours
     END AS prep_hours,
-    transit_days,
-    order_year, order_month, order_week, order_dow,
-    purchase_hour, is_weekend_purchase,
-    delay_bucket, delivery_days_bucket,
-    -- Columna indicadora para análisis
-    CASE WHEN delivery_days IS NOT NULL THEN true ELSE false END AS was_delivered
-FROM olist.orders;
+    o.transit_days,
+    o.order_year,
+    o.order_month,
+    o.order_week,
+    o.order_dow,
+    o.purchase_hour,
+    o.is_weekend_purchase,
+    o.delay_bucket,
+    o.delivery_days_bucket,
+    CASE WHEN o.delivery_days IS NOT NULL THEN true ELSE false END AS was_delivered
+FROM olist.orders o
+LEFT JOIN olist.customers c ON o.customer_id = c.customer_id;
 
 -- SATISFACCIÓN 
 CREATE OR REPLACE VIEW olist.vw_customer_satisfaction AS
 SELECT
   r.order_id,
+  r.review_id, 
+  o.order_purchase_timestamp, 
   r.review_score,
   CAST(r.review_creation_date    AS TIMESTAMP) AS review_creation_date,
   CAST(r.review_answer_timestamp AS TIMESTAMP) AS review_answer_timestamp,
